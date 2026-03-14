@@ -58,7 +58,10 @@ export class AuthController extends BaseController {
         const token = await jwt.sign({ id: user._id }, process.env.JWT_SECRET!, { expiresIn: "7d" });
         const { password, ...rest } = user.toObject();
 
-        this.setCookie(res, "token", token)
+        this.setCookie(res, "token", token, {
+            httpOnly: true,
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        });
         return this.sendSuccessResponse(res, 200, "User logged in successfully", { user: rest });
     }
 
@@ -69,6 +72,7 @@ export class AuthController extends BaseController {
         if (Utils.isNull(user)) {
             return this.sendErrorResponse(next, 400, "User not found");
         }
+        this.clearCookie(res, "token");
         return this.sendSuccessResponse(res, 200, "User removed successfully");
     }
 

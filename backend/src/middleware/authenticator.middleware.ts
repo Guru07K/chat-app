@@ -7,16 +7,23 @@ import { User } from "../schema/user.schema";
 export class Authenticator {
     public isAuthenticated = async (req: Request, res: Response, next: NextFunction) => {
 
-        const token = req.cookies.token;
-        if (Utils.isNull(token)) {
-            return next(new ErrorHandler(401, "Login required to access this resource"));
+        try {
+            const token = req.cookies.token;
+            if (Utils.isNull(token)) {
+                return next(new ErrorHandler(401, "Login required to access this resource"));
+            }
+
+            const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as any;
+            const user = await User.findById(decoded.id);
+            if (Utils.isNull(user)) {
+                return next(new ErrorHandler(401, "Unauthorized user"));
+            }
+            (req as any).user = user;
+            next();
+        } catch (error: any) {
+            return next(new ErrorHandler(401, error.message));
         }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as any;
-        const user = await User.findById(decoded.id);
-        if (Utils.isNull(user)) {
-            return next(new ErrorHandler(401, "Unauthorized user"));
-        }
-        next();
+
     }
 }

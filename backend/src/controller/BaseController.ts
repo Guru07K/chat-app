@@ -18,4 +18,8 @@ export class BaseController {
     protected setCookie(res: Response, name: string, value: string, options?: any) {
         res.cookie(name, value, options);
     }
+
+    protected clearCookie(res: Response, name: string) {
+        res.clearCookie(name);
+    }
 }
