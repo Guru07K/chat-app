@@ -5,7 +5,6 @@ import { BaseController } from "./BaseController";
 import { GetUserFilter, LoginRequest, SignUpRequest, UpdateUserRequest } from '../model/auth_model';
 import { User } from '../schema/user.schema';
 import { Utils } from '../utils/Utils';
-import { ResendEmailService } from '../service/email/resend_email.service';
 import { UserEmailService } from '../service/email/user_email.service';
 
 export class AuthController extends BaseController {
@@ -47,6 +46,8 @@ export class AuthController extends BaseController {
         const user = await User.findOne({ email: login_req.email }).select("+password");
         if (Utils.isNull(user)) {
             return this.sendErrorResponse(next, 400, "User not found");
+        } else if (!Utils.isTrue(user.is_verified)) {
+            return this.sendErrorResponse(next, 400, "User is not verified");
         }
 
         const isPasswordValid = await bcrypt.compare(login_req.password, user.password);
@@ -101,6 +102,26 @@ export class AuthController extends BaseController {
         return this.sendSuccessResponse(res, 200, "User updated successfully", { user: user });
     }
 
+    // API ==> /api/v1/auth/verify-email
+    public verifyEmail = async (req: Request, res: Response, next: NextFunction) => {
+
+        const { token } = req.query;
+        if (Utils.isNull(token)) {
+            return this.sendErrorResponse(next, 400, "Token is required");
+        }
+
+        const user = await User.findOne({ verify_token: token });
+        if (Utils.isNull(user)) {
+            return this.sendErrorResponse(next, 400, "Invalid token");
+        }
+
+        user.is_verified = true;
+        user.verify_token = undefined;
+        await user.save();
+
+        return this.sendSuccessResponse(res, 200, "User verified successfully", { user: user });
+    }
+
     // API ==> /api/v1/auth/userList
     public getUserList = async (req: Request, res: Response, next: NextFunction) => {
         const filter = req.body as GetUserFilter;
@@ -120,8 +141,6 @@ export class AuthController extends BaseController {
         }
 
         const users = await User.find(query);
-        await UserEmailService.sendVerificationEmail(users[0])
-
         return this.sendSuccessResponse(res, 200, "User list", { users });
     }
 

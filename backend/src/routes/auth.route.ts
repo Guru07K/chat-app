@@ -13,6 +13,8 @@ router.post('/userList', authenticator.isAuthenticated, authController.getUserLi
 router.delete('/removeUser', authenticator.isAuthenticated, authController.removeUser);
 router.put('/updateUser', authenticator.isAuthenticated, authController.updateUser);
 
+router.get('/verify-email', authController.verifyEmail);
+
 
 
 export default router;

@@ -20,7 +20,7 @@ export class EmailTemplateService {
 
         let html = htmlTemplate({
             user_name: user_name,
-            verify_link: `${process.env.CLIENT_URL}/verify-email?token=${verify_token}`
+            verify_link: `${process.env.BASE_URL}/api/v1/auth/verify-email?token=${verify_token}`
         });
 
         return { html: html, subject: subject };
