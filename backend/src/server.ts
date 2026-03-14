@@ -5,6 +5,7 @@ import { connectToDatabase } from './config/database.config';
 import dns from 'dns';
 import authRoute from './routes/auth.route';
 import { ErrorMiddleware } from './middleware/error.middleware';
+import messageRouter from './routes/message.route';
 
 
 dns.setServers(["8.8.8.8", "1.1.1.1"])
@@ -21,7 +22,7 @@ const errorMiddleware = new ErrorMiddleware();
 
 
 app.use('/api/v1/auth', authRoute);
-
+app.use('/api/v1/message', messageRouter);
 
 // Error handling middleware
 app.use(errorMiddleware.globalErrorMiddleware);

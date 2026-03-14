@@ -33,7 +33,8 @@ export class AuthController extends BaseController {
         if (Utils.isNull(user)) {
             return this.sendErrorResponse(next, 500, "Failed to create user");
         } else {
-            await UserEmailService.sendVerificationEmail(user)
+            // TODO: need to uncomment after deploy
+            // await UserEmailService.sendVerificationEmail(user)
             return this.sendSuccessResponse(res, 201, "User created successfully", { user: rest });
         }
 
@@ -46,9 +47,11 @@ export class AuthController extends BaseController {
         const user = await User.findOne({ email: login_req.email }).select("+password");
         if (Utils.isNull(user)) {
             return this.sendErrorResponse(next, 400, "User not found");
-        } else if (!Utils.isTrue(user.is_verified)) {
-            return this.sendErrorResponse(next, 400, "User is not verified");
         }
+        // TODO: need to uncomment
+        // else if (!Utils.isTrue(user.is_verified)) {
+        //     return this.sendErrorResponse(next, 400, "User is not verified");
+        // }
 
         const isPasswordValid = await bcrypt.compare(login_req.password, user.password);
         if (!isPasswordValid) {

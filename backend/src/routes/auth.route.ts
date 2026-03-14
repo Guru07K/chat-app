@@ -7,13 +7,18 @@ const router = express.Router();
 const authController = new AuthController();
 const authenticator = new Authenticator();
 
+// Public routes
 router.post('/signup', authController.signUpUser);
 router.post('/login', authController.loginUser);
-router.post('/userList', authenticator.isAuthenticated, authController.getUserList);
-router.delete('/removeUser', authenticator.isAuthenticated, authController.removeUser);
-router.put('/updateUser', authenticator.isAuthenticated, authController.updateUser);
-
 router.get('/verify-email', authController.verifyEmail);
+
+// Protected routes
+router.use(authenticator.isAuthenticated);
+
+router.post('/userList', authController.getUserList);
+router.delete('/removeUser', authController.removeUser);
+router.put('/updateUser', authController.updateUser);
+
 
 
 
