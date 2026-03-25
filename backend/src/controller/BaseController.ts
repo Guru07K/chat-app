@@ -11,7 +11,7 @@ export class BaseController {
         res.status(statusCode).json({
             status: "Success",
             message: message,
-            data: data
+            result: data
         });
     }
 

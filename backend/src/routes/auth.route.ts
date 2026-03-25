@@ -18,6 +18,8 @@ router.use(authenticator.isAuthenticated);
 router.post('/userList', authController.getUserList);
 router.delete('/removeUser', authController.removeUser);
 router.put('/updateUser', authController.updateUser);
+router.get('/isLoggedIn', authController.isLoggedIn)
+router.get('/logout', authController.logout)
 
 
 

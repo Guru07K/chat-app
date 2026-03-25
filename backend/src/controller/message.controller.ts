@@ -13,7 +13,7 @@ export class MessageController extends BaseController {
             const logged_user_id = req.user._id;
 
             const users = await User.find({ _id: { $ne: logged_user_id } })
-            return this.sendSuccessResponse(res, 200, "Contacts fetched successfully", users);
+            return this.sendSuccessResponse(res, 200, "Contacts fetched successfully", { users: users });
 
         } catch (error: any) {
             return this.sendErrorResponse(next, 500, error.message);
@@ -77,7 +77,7 @@ export class MessageController extends BaseController {
 
             const chat_partners = await User.find({ _id: { $in: chat_partner_ids } })
 
-            return this.sendSuccessResponse(res, 200, "Chat partners fetched successfully", chat_partners);
+            return this.sendSuccessResponse(res, 200, "Chat partners fetched successfully", { chat_partners: chat_partners });
         } catch (error: any) {
             return this.sendErrorResponse(next, 500, error.message);
         }

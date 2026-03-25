@@ -13,9 +13,9 @@ export class AuthController extends BaseController {
     public signUpUser = async (req: Request, res: Response, next: NextFunction) => {
         const signup_req = req.body as SignUpRequest;
 
-        if (signup_req.password !== signup_req.confirm_password) {
-            return this.sendErrorResponse(next, 400, "Password and confirm password didn't match");
-        }
+        // if (signup_req.password !== signup_req.confirm_password) {
+        //     return this.sendErrorResponse(next, 400, "Password and confirm password didn't match");
+        // }
         if (signup_req.password.length < 8) {
             return this.sendErrorResponse(next, 400, "Password must be at least 8 characters long");
         }
@@ -41,9 +41,8 @@ export class AuthController extends BaseController {
     }
 
     // API ==> /api/v1/auth/login
-    public loginUser = async (req: Request, res: Response, next: NextFunction) => {
+    public loginUser = async (req: Request | any, res: Response, next: NextFunction) => {
         const login_req: LoginRequest = req.body;
-
         const user = await User.findOne({ email: login_req.email }).select("+password");
         if (Utils.isNull(user)) {
             return this.sendErrorResponse(next, 400, "User not found");
@@ -88,12 +87,6 @@ export class AuthController extends BaseController {
 
         let query: any = {};
 
-        if (!Utils.isNull(update_req.user_name)) {
-            query.user_name = update_req.user_name;
-        }
-        if (!Utils.isNull(update_req.email)) {
-            query.email = update_req.email;
-        }
         if (!Utils.isNull(update_req.password)) {
             if (update_req.password.length < 8) {
                 return this.sendErrorResponse(next, 400, "Password must be at least 8 characters long");
@@ -101,8 +94,17 @@ export class AuthController extends BaseController {
             query.password = await bcrypt.hash(update_req.password, 10);
         }
 
+        if (!Utils.isNull(update_req.user_name)) {
+            query.user_name = update_req.user_name;
+        }
+        if (!Utils.isNull(update_req.email)) {
+            query.email = update_req.email;
+        }
+        if (!Utils.isNull(update_req.profile_image_url)) {
+            query.profile_image_url = update_req.profile_image_url;
+        }
 
-        const user = await User.findByIdAndUpdate(update_req.user_id, query, { new: true });
+        const user = await User.findByIdAndUpdate(update_req.user_id, query, { returnDocument: 'after' });
         if (Utils.isNull(user)) {
             return this.sendErrorResponse(next, 400, "User not found");
         }
@@ -149,6 +151,21 @@ export class AuthController extends BaseController {
 
         const users = await User.find(query);
         return this.sendSuccessResponse(res, 200, "User list", { users });
+    }
+
+    // API ==> /api/v1/auth/isLoggedIn
+    public isLoggedIn = async (req: Request | any, res: Response, next: NextFunction) => {
+        return this.sendSuccessResponse(res, 200, "User is logged in", { isLoggedIn: true, user: req.user });
+    }
+
+    // API ==> /api/v1/auth/logout
+    public logout = async (req: Request | any, res: Response, next: NextFunction) => {
+        const { token } = req.cookies;
+        if (Utils.isNull(token)) {
+            return this.sendErrorResponse(next, 400, "User is not logged in");
+        }
+        this.clearCookie(res, "token");
+        return this.sendSuccessResponse(res, 200, "User logged out successfully", { user: req.user });
     }
 
 }
