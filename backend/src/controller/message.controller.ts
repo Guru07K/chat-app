@@ -3,7 +3,8 @@ import { BaseController } from "./BaseController";
 import { User } from "../schema/user.schema";
 import { Message } from "../schema/message.schema";
 import { Utils } from "../utils/Utils";
-import Cloudinary from "../service/cloudinary/clodinary.service";
+import cloudinary from "../service/cloudinary/clodinary.service";
+import { getReceiverSocketId, io } from "../utils/socket";
 
 export class MessageController extends BaseController {
 
@@ -30,14 +31,24 @@ export class MessageController extends BaseController {
 
             let image_url;
             if (!Utils.isNull(image)) {
-                const data = await Cloudinary.uploader.upload(image);
+                // const data = await Cloudinary.uploader.upload(image);
+                const data = await cloudinary.uploader.upload(image, {
+                    folder: "messages",
+                });
                 image_url = data.secure_url;
             }
 
             const message = await Message.create({ sender_id, receiver_id, text, image: image_url });
-            return this.sendSuccessResponse(res, 200, "Message sent successfully", message);
+
+            const receiver_socket_id = getReceiverSocketId(receiver_id);
+            if (receiver_socket_id) {
+                io.to(receiver_socket_id).emit("newMessage", message);
+            }
+
+            return this.sendSuccessResponse(res, 200, "Message sent successfully", { message });
 
         } catch (error: any) {
+            console.log('error :>> ', error);
             return this.sendErrorResponse(next, 500, error.message);
         }
     }
@@ -55,7 +66,7 @@ export class MessageController extends BaseController {
                 ]
             })
 
-            return this.sendSuccessResponse(res, 200, "Messages fetched successfully", messages);
+            return this.sendSuccessResponse(res, 200, "Messages fetched successfully", { messages });
 
         } catch (error: any) {
             return this.sendErrorResponse(next, 500, error.message);

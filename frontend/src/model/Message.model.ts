@@ -16,6 +16,10 @@ export interface ChatModel {
     setSelectedUser: (user: any) => void,
     getAllContacts: () => void,
     getMyChatPartners: () => void,
+    getMyMessagesByUserId: (user_id: string) => void,
+    sendMessage: (data: any) => void,
+    SubscribeEvent: () => void,
+    UnSubscribeEvent: () => void,
 
     // setActiveTab: (tab: string) => set({ activeTab: tab }),
     // setSelectedUser: (user: any) => set({ selectedUser: user }),

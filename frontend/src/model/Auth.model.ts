@@ -3,6 +3,8 @@ export interface AuthStore {
     isLoading: boolean,
     isLoggedIn: boolean,
     isSignedUp: boolean,
+    socket: any,
+    onlineUsers: any[],
     success?: string,
     error?: string,
 
@@ -11,6 +13,8 @@ export interface AuthStore {
     Logout: (user: any) => void,
     Signup: (data: SignUpRequest) => Promise<void>,
     ClearMessage: () => void
+    ConnectSocket: () => void
+    DisConnectSocket: () => void
     UpdateProfileImage: (data: UpdateUserRequest) => void
 }
 

@@ -23,7 +23,7 @@ function ProfileHeader() {
     formData.append("upload_preset", "chat-app");
 
     const res = await fetch(
-      "https://api.cloudinary.com/v1_1/dtizyby9c/image/upload",
+      `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
       {
         method: "POST",
         body: formData,

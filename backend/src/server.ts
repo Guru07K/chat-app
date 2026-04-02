@@ -7,6 +7,7 @@ import authRoute from './routes/auth.route';
 import { ErrorMiddleware } from './middleware/error.middleware';
 import messageRouter from './routes/message.route';
 import cors from 'cors';
+import { app, server } from './utils/socket';
 
 
 dns.setServers(["8.8.8.8", "1.1.1.1"])
@@ -14,7 +15,6 @@ dotenv.config();
 const PORT = process.env.PORT || 7070;
 
 
-const app = express();
 app.use(express.json({ limit: '50mb' }));
 app.use(cookieParser());
 app.use(cors({
@@ -32,7 +32,7 @@ app.use('/api/v1/message', messageRouter);
 // Error handling middleware
 app.use(errorMiddleware.globalErrorMiddleware);
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`>>>>>>>>>>>> Server is running on port ${PORT} <<<<<<<<<<<<<<<<`);
     connectToDatabase()
 });
