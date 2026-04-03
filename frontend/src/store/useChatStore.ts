@@ -18,11 +18,6 @@ export const useChatStore = create<ChatModel>((set, get) => {
         setActiveTab: (tab: string) => set({ activeTab: tab }),
         setSelectedUser: (user: any) => set({ selectedUser: user }),
 
-        toggleSound: () => {
-            localStorage.setItem('isSoundEnabled', get().isSoundEnabled.toString());
-            set({ isSoundEnabled: !get().isSoundEnabled, })
-        },
-
         getAllContacts: async () => {
             try {
                 set({ isUsersLoading: true })
@@ -82,8 +77,8 @@ export const useChatStore = create<ChatModel>((set, get) => {
                 _id: temp_id,
                 sender_id: user._id,
                 receiver_id: get().selectedUser._id,
-                text: data.text,
-                image: data.image,
+                text: data?.text,
+                image: data?.image,
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString(),
                 isOptimistic: true

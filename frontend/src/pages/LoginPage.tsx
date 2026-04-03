@@ -15,7 +15,7 @@ function LoginPage() {
     password: "",
   });
 
-  const { Login, isLoading, isLoggedIn } = useAuthStore();
+  const { Login, isLoading, isLoggedIn, isSignedUp } = useAuthStore();
   const navigation = useNavigate();
 
   const handleSubmit = (e: React.SubmitEvent) => {
@@ -24,6 +24,10 @@ function LoginPage() {
   };
 
   useEffect(() => {
+    if (isSignedUp) {
+      useAuthStore.setState({ isSignedUp: false });
+    }
+
     if (isLoggedIn) {
       navigation("/");
     }

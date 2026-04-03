@@ -59,6 +59,7 @@ export const useAuthStore = create<AuthStore>((set, get) => {
             try {
                 set({ isLoading: true })
 
+
                 const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/login`, req_data, { withCredentials: true });
                 set({
                     user: res.data.result.user,

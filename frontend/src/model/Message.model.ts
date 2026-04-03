@@ -6,12 +6,10 @@ export interface ChatModel {
     selectedUser: any,
     isUsersLoading: boolean,
     isMessageLoading: boolean,
-    isSoundEnabled: boolean,
     success?: string,
     error?: string,
 
 
-    toggleSound: () => void,
     setActiveTab: (tab: string) => void,
     setSelectedUser: (user: any) => void,
     getAllContacts: () => void,

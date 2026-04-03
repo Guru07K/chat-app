@@ -22,10 +22,13 @@ const SignUpPage = () => {
   const handleSubmit = (e: React.SubmitEvent) => {
     e.preventDefault();
     Signup(formData);
-    if (isSignedUp) {
-      navigate("/");
-    }
   };
+
+  useEffect(() => {
+    if (isSignedUp) {
+      navigate("/login");
+    }
+  });
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
