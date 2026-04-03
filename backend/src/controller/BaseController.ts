@@ -1,4 +1,4 @@
-import { NextFunction, Response } from "express";
+import { CookieOptions, NextFunction, Response } from "express";
 import { ErrorHandler } from "../utils/error_handler";
 
 export class BaseController {
@@ -15,11 +15,11 @@ export class BaseController {
         });
     }
 
-    protected setCookie(res: Response, name: string, value: string, options?: any) {
+    protected setCookie(res: Response, name: string, value: string, options: CookieOptions) {
         res.cookie(name, value, options);
     }
 
-    protected clearCookie(res: Response, name: string) {
-        res.clearCookie(name);
+    protected clearCookie(res: Response, name: string, options?: CookieOptions) {
+        res.clearCookie(name, options);
     }
 }

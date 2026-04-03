@@ -166,7 +166,11 @@ export class AuthController extends BaseController {
         if (Utils.isNull(token)) {
             return this.sendErrorResponse(next, 400, "User is not logged in");
         }
-        this.clearCookie(res, "token");
+        this.clearCookie(res, "token", {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+        });
         return this.sendSuccessResponse(res, 200, "User logged out successfully", { user: req.user });
     }
 
