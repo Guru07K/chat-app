@@ -30,7 +30,7 @@ function ChatsList() {
             <div className={`avatar`}>
               <div className="size-12 rounded-full">
                 <img
-                  src={chat.profilePic || "/avatar.png"}
+                  src={chat.profile_image_url || "/avatar.png"}
                   alt={chat.user_name}
                 />
               </div>
