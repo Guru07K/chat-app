@@ -1,12 +1,9 @@
 import { useState, useRef } from "react";
-import { LogOutIcon, VolumeOffIcon, Volume2Icon } from "lucide-react";
-import { useChatStore } from "../store/useChatStore";
+import { LogOutIcon } from "lucide-react";
 import { useAuthStore } from "../store/AuthStore";
 
-const mouseClickSound = new Audio("/sounds/mouse-click.mp3");
-
 function ProfileHeader() {
-  const { Logout, ChechAuth, user, UpdateProfileImage } = useAuthStore();
+  const { Logout, user, UpdateProfileImage } = useAuthStore();
   const [selectedImg, setSelectedImg] = useState<string | ArrayBuffer | null>(
     null,
   );
