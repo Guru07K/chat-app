@@ -21,6 +21,7 @@ app.use(cors({
     origin: process.env.CLIENT_URL,
     credentials: true
 }))
+app.set("trust proxy", 1);
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
 const errorMiddleware = new ErrorMiddleware();
