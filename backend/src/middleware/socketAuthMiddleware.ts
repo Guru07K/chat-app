@@ -10,7 +10,7 @@ export const socketMiddleware = async (socket: any, next: any) => {
             .find((row: any) => row.startsWith("token="))
             ?.split("=")[1];
 
-        if (Utils.isNull(token)) {
+        if (!token) {
             return next(new Error("Socket connection rejected: No token provided"));
         }
 

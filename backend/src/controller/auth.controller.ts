@@ -14,7 +14,7 @@ export class AuthController extends BaseController {
         const signup_req = req.body as SignUpRequest;
 
         // if (signup_req.password !== signup_req.confirm_password) {
-        //     return this.sendErrorResponse(next, 400, "Password and confirm password didn't match");
+        // return this.sendErrorResponse(next, 400, "Password and confirm password didn't match");
         // }
         if (signup_req.password.length < 8) {
             return this.sendErrorResponse(next, 400, "Password must be at least 8 characters long");
