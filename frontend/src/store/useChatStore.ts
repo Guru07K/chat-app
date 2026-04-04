@@ -3,6 +3,8 @@ import type { ChatModel } from "../model/Message.model";
 import axios from "axios";
 import { useAuthStore } from "./AuthStore";
 
+axios.defaults.withCredentials = true;
+
 export const useChatStore = create<ChatModel>((set, get) => {
     return {
 
@@ -22,7 +24,7 @@ export const useChatStore = create<ChatModel>((set, get) => {
             try {
                 set({ isUsersLoading: true })
 
-                const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/message/contacts`, { withCredentials: true });
+                const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/message/contacts`);
                 set({
                     allContacts: res.data.result.users,
                     success: res.data.message
@@ -39,7 +41,7 @@ export const useChatStore = create<ChatModel>((set, get) => {
             try {
                 set({ isUsersLoading: true })
 
-                const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/message/chats`, { withCredentials: true });
+                const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/message/chats`);
                 set({
                     chats: res.data.result.chat_partners,
                     success: res.data.message
@@ -56,7 +58,7 @@ export const useChatStore = create<ChatModel>((set, get) => {
             try {
                 set({ isMessageLoading: true })
 
-                const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/message/${user_id}`, { withCredentials: true });
+                const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/message/${user_id}`);
 
                 set({ messages: res.data.result.messages })
 
@@ -87,7 +89,7 @@ export const useChatStore = create<ChatModel>((set, get) => {
             set({ messages: [...get().messages, optmistic_message] })
 
             try {
-                const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/message/send/${get().selectedUser._id}`, data, { withCredentials: true });
+                const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/message/send/${get().selectedUser._id}`, data);
 
                 set({
                     messages: [

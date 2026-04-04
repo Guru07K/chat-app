@@ -8,16 +8,18 @@ import Loader from "./components/Loader";
 import toast, { Toaster } from "react-hot-toast";
 
 function App() {
-  const { isLoading, success, error, isLoggedIn, ClearMessage } =
+  const { isLoading, success, error, isLoggedIn, ClearMessage, ChechAuth } =
     useAuthStore();
+
+  useEffect(() => {
+    ChechAuth();
+  }, []);
 
   // Toast
   useEffect(() => {
-    if (success) {
-      toast.success(success, { duration: 5000 });
-    } else if (error) {
-      toast.error(error, { duration: 5000 });
-    }
+    if (success) toast.success(success, { duration: 5000 });
+    else if (error) toast.error(error, { duration: 5000 });
+
     ClearMessage();
   }, [success, error]);
 

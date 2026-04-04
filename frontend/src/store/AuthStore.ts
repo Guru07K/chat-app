@@ -3,6 +3,8 @@ import type { AuthStore, LoginRequest, SignUpRequest, UpdateUserRequest } from "
 import axios from "axios";
 import io from 'socket.io-client'
 
+axios.defaults.withCredentials = true;
+
 export const useAuthStore = create<AuthStore>((set, get) => {
     return {
         user: null,
@@ -17,18 +19,17 @@ export const useAuthStore = create<AuthStore>((set, get) => {
         ChechAuth: async () => {
             try {
                 set({ isLoading: true, isLoggedIn: false })
-                const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/isLoggedIn`, { withCredentials: true });
+                const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/isLoggedIn`);
 
                 set({
                     user: res.data.result.user,
                     isLoggedIn: true,
-                    success: res.data.result.message
                 });
 
                 get().ConnectSocket();
 
             } catch (error: any) {
-                set({ user: null, isLoggedIn: false, error: error.response.data.message });
+                set({ user: null, isLoggedIn: false });
             } finally {
                 set({ isLoading: false });
             }
@@ -60,7 +61,7 @@ export const useAuthStore = create<AuthStore>((set, get) => {
                 set({ isLoading: true })
 
 
-                const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/login`, req_data, { withCredentials: true });
+                const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/login`, req_data);
                 set({
                     user: res.data.result.user,
                     success: res.data.message,
@@ -79,7 +80,7 @@ export const useAuthStore = create<AuthStore>((set, get) => {
         Logout: async () => {
             try {
                 set({ isLoading: true })
-                const res = await axios(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/logout`, { withCredentials: true });
+                const res = await axios(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/logout`);
                 set({ user: null, success: res.data.message, isLoggedIn: false })
                 get().DisConnectSocket();
             } catch (error: any) {
@@ -93,7 +94,7 @@ export const useAuthStore = create<AuthStore>((set, get) => {
             try {
                 set({ isLoading: true })
 
-                const res = await axios.put(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/updateUser`, data, { withCredentials: true });
+                const res = await axios.put(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/updateUser`, data);
                 set({ user: res.data.result.user, success: res.data.message })
 
             } catch (error: any) {
@@ -107,7 +108,7 @@ export const useAuthStore = create<AuthStore>((set, get) => {
             try {
                 if (!get().user || get().socket?.connected) return
 
-                const socket = io(import.meta.env.VITE_BASE_URL, { withCredentials: true });
+                const socket = io(import.meta.env.VITE_BASE_URL);
                 socket.connect();
 
                 set({ socket: socket })
