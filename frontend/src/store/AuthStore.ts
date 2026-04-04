@@ -108,7 +108,7 @@ export const useAuthStore = create<AuthStore>((set, get) => {
             try {
                 if (!get().user || get().socket?.connected) return
 
-                const socket = io(import.meta.env.VITE_BASE_URL);
+                const socket = io(import.meta.env.VITE_BASE_URL, { withCredentials: true });
                 socket.connect();
 
                 set({ socket: socket })
