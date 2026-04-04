@@ -116,7 +116,7 @@ export class AuthController extends BaseController {
     // API ==> /api/v1/auth/verify-email
     public verifyEmail = async (req: Request, res: Response, next: NextFunction) => {
 
-        const { token } = req.query;
+        const token = req.query.token as string;
         if (Utils.isNull(token)) {
             return this.sendErrorResponse(next, 400, "Token is required");
         }
