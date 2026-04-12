@@ -36,7 +36,7 @@ self.addEventListener("notificationclick", function (event) {
         for (const tab of tabList) {
           if (tab.url.includes(self.location.origin) && "focus" in tab) {
             tab.focus();
-            tab.navigate(`/chat/${senderId}`);
+            tab.navigate(`${import.meta.env.VITE_BASE_URL}//chat/${senderId}`);
             return;
           }
         }
