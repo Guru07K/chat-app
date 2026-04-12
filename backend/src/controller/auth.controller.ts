@@ -28,7 +28,16 @@ export class AuthController extends BaseController {
         const hashed_password = await bcrypt.hash(signup_req.password, 10);
 
         user = await User.create({ ...signup_req, password: hashed_password });
+
+        const token = await jwt.sign({ id: user._id }, process.env.JWT_SECRET!, { expiresIn: "7d" });
         const { password, ...rest } = user.toObject();
+
+        this.setCookie(res, "token", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        });
 
         if (Utils.isNull(user)) {
             return this.sendErrorResponse(next, 500, "Failed to create user");
@@ -111,6 +120,18 @@ export class AuthController extends BaseController {
             return this.sendErrorResponse(next, 400, "User not found");
         }
         return this.sendSuccessResponse(res, 200, "User updated successfully", { user: user });
+    }
+
+    // POST /save-fcm-token
+    public saveFcmToken = async (req: any, res: Response) => {
+        const user_id = req.user._id;
+        const { token } = req.body;
+
+        await User.findByIdAndUpdate(user_id, {
+            fcm_token: token
+        });
+
+        res.json({ message: "Token saved" });
     }
 
     // API ==> /api/v1/auth/verify-email

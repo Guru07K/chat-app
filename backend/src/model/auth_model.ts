@@ -16,6 +16,7 @@ export interface UpdateUserRequest {
     email?: string;
     password?: string;
     profile_image_url?: string;
+    fcm_token?: string;
 }
 
 export interface GetUserFilter {

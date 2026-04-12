@@ -15,6 +15,7 @@ router.get('/verify-email', authController.verifyEmail);
 // Protected routes
 router.use(authenticator.isAuthenticated);
 
+router.post('/save-fcm-token', authController.saveFcmToken);
 router.post('/userList', authController.getUserList);
 router.delete('/removeUser', authController.removeUser);
 router.put('/updateUser', authController.updateUser);

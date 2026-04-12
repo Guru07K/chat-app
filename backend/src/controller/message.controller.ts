@@ -5,6 +5,7 @@ import { Message } from "../schema/message.schema";
 import { Utils } from "../utils/Utils";
 import cloudinary from "../service/cloudinary/clodinary.service";
 import { getReceiverSocketId, io } from "../utils/socket";
+import { messaging } from "../service/Firebase/firebase";
 
 export class MessageController extends BaseController {
 
@@ -38,11 +39,26 @@ export class MessageController extends BaseController {
                 image_url = data.secure_url;
             }
 
+            const user = await User.findById(sender_id);
+
             const message = await Message.create({ sender_id, receiver_id, text, image: image_url });
 
             const receiver_socket_id = getReceiverSocketId(receiver_id);
             if (receiver_socket_id) {
                 io.to(receiver_socket_id).emit("newMessage", message);
+            } else {
+                const receiver = await User.findById(receiver_id);
+
+                if (receiver?.fcm_token) {
+                    await messaging.send({
+                        token: receiver.fcm_token,
+                        data: {
+                            title: user?.user_name || "",
+                            body: message.text || "📷 Image",
+                            sender_id: sender_id.toString()
+                        }
+                    });
+                }
             }
 
             return this.sendSuccessResponse(res, 200, "Message sent successfully", { message });
