@@ -2,16 +2,20 @@ import { XIcon } from "lucide-react";
 import { useChatStore } from "../store/useChatStore";
 import { useEffect } from "react";
 import { useAuthStore } from "../store/AuthStore";
+import { useNavigate } from "react-router-dom";
 
 function ChatHeader() {
   const { selectedUser, setSelectedUser } = useChatStore();
   const { onlineUsers } = useAuthStore();
-
+  const navigate = useNavigate();
   const isOnline = onlineUsers.includes(selectedUser._id);
 
   useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setSelectedUser(null);
+      if (event.key === "Escape") {
+        setSelectedUser(null);
+        navigate("/");
+      }
     };
 
     window.addEventListener("keydown", handleEscKey);
@@ -44,7 +48,12 @@ function ChatHeader() {
         </div>
       </div>
 
-      <button onClick={() => setSelectedUser(null)}>
+      <button
+        onClick={() => {
+          setSelectedUser(null);
+          navigate("/");
+        }}
+      >
         <XIcon className="w-5 h-5 text-slate-400 hover:text-slate-200 transition-colors cursor-pointer" />
       </button>
     </div>

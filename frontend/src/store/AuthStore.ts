@@ -2,13 +2,14 @@ import { create } from "zustand";
 import type { AuthStore, LoginRequest, SignUpRequest, UpdateUserRequest } from "../model/Auth.model";
 import axios from "axios";
 import io from 'socket.io-client'
+import { getFcmToken } from "../service/getFcmToken";
 
 axios.defaults.withCredentials = true;
 
 export const useAuthStore = create<AuthStore>((set, get) => {
     return {
         user: null,
-        isLoading: false,
+        isLoading: true,
         isLoggedIn: false,
         isSignedUp: false,
         socket: null,
@@ -49,6 +50,14 @@ export const useAuthStore = create<AuthStore>((set, get) => {
 
                 get().ConnectSocket();
 
+                const token = await getFcmToken();
+                if (token) {
+                    await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/save-fcm-token`, {
+                        token
+                    });
+                }
+
+
             } catch (error: any) {
                 set({ user: null, error: error.response.data.message })
             } finally {
@@ -60,7 +69,6 @@ export const useAuthStore = create<AuthStore>((set, get) => {
             try {
                 set({ isLoading: true })
 
-
                 const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/login`, req_data);
                 set({
                     user: res.data.result.user,
@@ -69,6 +77,15 @@ export const useAuthStore = create<AuthStore>((set, get) => {
                 })
 
                 get().ConnectSocket();
+
+                const token = await getFcmToken();
+
+                if (token) {
+                    await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/save-fcm-token`, {
+                        token
+                    });
+                }
+
 
             } catch (error: any) {
                 set({ user: null, error: error.response.data.message })

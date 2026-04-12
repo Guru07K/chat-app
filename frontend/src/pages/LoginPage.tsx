@@ -5,7 +5,7 @@ import {
   LoaderIcon,
   LockIcon,
 } from "lucide-react";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { useAuthStore } from "../store/AuthStore";
 import type { LoginRequest } from "../model/Auth.model";
 
@@ -16,30 +16,34 @@ function LoginPage() {
   });
 
   const { Login, isLoading, isLoggedIn, isSignedUp } = useAuthStore();
-  const navigation = useNavigate();
 
   const handleSubmit = (e: React.SubmitEvent) => {
     e.preventDefault();
     Login(formData);
   };
 
-  useEffect(() => {
-    if (isSignedUp) {
-      useAuthStore.setState({ isSignedUp: false });
-    }
+  const navigate = useNavigate();
+  const location = useLocation();
 
+  useEffect(() => {
     if (isLoggedIn) {
-      navigation("/");
+      const from = (location.state as any)?.from?.pathname || "/";
+
+      // ✅ Only restore /chat/:user_id if it came from a notification click
+      // Don't restore it if user just refreshed or navigated normally
+      const isFromNotification =
+        location.state?.from?.search === "" && from.startsWith("/chat/");
+
+      navigate(isFromNotification ? from : "/", { replace: true });
     }
   }, [isLoggedIn]);
-
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   return (
-    <div className="w-full flex items-center justify-center p-4 bg-slate-900">
-      <div className="relative w-full max-w-6xl md:h-800 h-650">
+    <div className="w-full flex  items-center justify-center p-4 bg-slate-900">
+      <div className="relative w-full max-w-5xl md:h-130 h-120">
         <div className="w-full flex flex-col md:flex-row">
           {/* FORM CLOUMN - LEFT SIDE */}
           <div className="md:w-1/2 p-8 flex items-center justify-center md:border-r border-slate-600/30">

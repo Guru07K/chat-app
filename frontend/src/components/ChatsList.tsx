@@ -3,12 +3,14 @@ import { useChatStore } from "../store/useChatStore";
 import UsersLoadingSkeleton from "./UsersLoadingSkeleton";
 import NoChatsFound from "./NoChatsFound";
 import { useAuthStore } from "../store/AuthStore";
+import { Link, useNavigate } from "react-router-dom";
 
 function ChatsList() {
   const { getMyChatPartners, chats, isUsersLoading, setSelectedUser } =
     useChatStore();
 
   const { onlineUsers } = useAuthStore();
+  const navigate = useNavigate();
 
   useEffect(() => {
     getMyChatPartners();
@@ -17,13 +19,20 @@ function ChatsList() {
   if (isUsersLoading) return <UsersLoadingSkeleton />;
   if (chats.length === 0) return <NoChatsFound />;
 
+  const onClickHandler = (chat: any) => {
+    setSelectedUser(chat);
+    navigate(`/chat/${chat._id}`);
+  };
+
   return (
     <>
       {chats.map((chat) => (
         <div
           key={chat._id}
           className="bg-cyan-500/10 p-4 rounded-lg cursor-pointer hover:bg-cyan-500/20 transition-colors"
-          onClick={() => setSelectedUser(chat)}
+          onClick={() => {
+            onClickHandler(chat);
+          }}
         >
           <div className="flex items-center gap-3">
             {/* TODO: FIX THIS ONLINE STATUS AND MAKE IT WORK WITH SOCKET */}
