@@ -37,13 +37,15 @@ self.addEventListener("notificationclick", function (event) {
           if (tab.url.includes(self.location.origin) && "focus" in tab) {
             tab.focus();
             tab.navigate(
-              `${import.meta.env.VITE_FRONTEND_URL}//chat/${senderId}`,
+              `${import.meta.env.VITE_FRONTEND_URL}/chat/${senderId}`,
             );
             return;
           }
         }
 
-        return clients.openWindow(`/chat/${senderId}`);
+        return clients.openWindow(
+          `${import.meta.env.VITE_FRONTEND_URL}/chat/${senderId}`,
+        );
       }),
   );
 });
