@@ -50,7 +50,7 @@ export class MessageController extends BaseController {
                 const receiver = await User.findById(receiver_id);
 
                 if (receiver?.fcm_token) {
-                    await messaging.send({
+                    const data = await messaging.send({
                         token: receiver.fcm_token,
                         data: {
                             title: user?.user_name || "",
@@ -59,6 +59,8 @@ export class MessageController extends BaseController {
                             url: `${process.env.CLIENT_URL}/chat/${sender_id}`
                         }
                     });
+                    console.log('data', data)
+                    console.log('process.env.CLIENT_URL :>> ', process.env.CLIENT_URL);
                 }
             }
 
