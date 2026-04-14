@@ -52,7 +52,7 @@ const ChatContainer = () => {
   };
 
   return (
-    <div className="flex flex-col h-full w-full">
+    <div className="flex flex-col h-lvh w-full">
       <ChatHeader />
 
       <div className="flex-1 overflow-y-auto px-4 py-6 bg-linear-to-b from-slate-900 to-slate-800">
