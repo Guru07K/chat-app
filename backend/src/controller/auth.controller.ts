@@ -13,9 +13,6 @@ export class AuthController extends BaseController {
     public signUpUser = async (req: Request, res: Response, next: NextFunction) => {
         const signup_req = req.body as SignUpRequest;
 
-        // if (signup_req.password !== signup_req.confirm_password) {
-        // return this.sendErrorResponse(next, 400, "Password and confirm password didn't match");
-        // }
         if (signup_req.password.length < 8) {
             return this.sendErrorResponse(next, 400, "Password must be at least 8 characters long");
         }
@@ -42,7 +39,7 @@ export class AuthController extends BaseController {
         if (Utils.isNull(user)) {
             return this.sendErrorResponse(next, 500, "Failed to create user");
         } else {
-            // TODO: need to uncomment after deploy
+            // TODO: need to uncomment after buying domain in resend
             // await UserEmailService.sendVerificationEmail(user)
             return this.sendSuccessResponse(res, 201, "User created successfully", { user: rest });
         }

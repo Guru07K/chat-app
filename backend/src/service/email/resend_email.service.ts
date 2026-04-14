@@ -8,8 +8,7 @@ export class ResendEmailService {
     public static async resendEmail(to: string, subject: string, html: string): Promise<CreateEmailResponse> {
         const res = await resend.emails.send({
             from: 'Guru-chatify <onboarding@resend.dev>',
-            // to: [to],
-            to: "gnanagurubb33@gmail.com",
+            to: [to],
             subject: subject,
             html: html,
         });
