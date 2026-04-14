@@ -42,7 +42,10 @@ self.addEventListener("notificationclick", function (event) {
             return;
           }
         }
-
+        console.log(
+          "import.meta.env.VITE_FRONTEND_URL",
+          import.meta.env.VITE_FRONTEND_URL,
+        );
         return clients.openWindow(
           `${import.meta.env.VITE_FRONTEND_URL}/chat/${senderId}`,
         );
