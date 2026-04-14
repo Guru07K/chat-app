@@ -59,8 +59,6 @@ export class MessageController extends BaseController {
                             url: `${process.env.CLIENT_URL}/chat/${sender_id}`
                         }
                     });
-                    console.log('data', data)
-                    console.log('process.env.CLIENT_URL :>> ', process.env.CLIENT_URL);
                 }
             }
 
