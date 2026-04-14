@@ -56,7 +56,8 @@ const ChatContainer = () => {
       <ChatHeader />
 
       {/* <div className="flex-1 overflow-y-auto px-4 py-6 min-h-0 bg-linear-to-b from-slate-900 to-slate-800"> */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 min-h-0 pb-24 bg-linear-to-b from-slate-900 to-slate-800">
+      <div className="flex-1 overflow-y-auto px-4 py-3 min-h-0 pb-20">
+        {" "}
         {messages.length > 0 && !isMessageLoading ? (
           <div className="space-y-3">
             {messages.map((msg) => {
@@ -158,7 +159,7 @@ const ChatContainer = () => {
       </div>
 
       {/* Input */}
-      <div className="sticky bottom-0 left-0 w-full bg-slate-900 px-3 py-2">
+      <div className="w-full bg-slate-900 px-3 py-2 border-t border-slate-700">
         <MessageInput />
       </div>
     </div>
