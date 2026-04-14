@@ -28,6 +28,7 @@ self.addEventListener("notificationclick", function (event) {
   event.notification.close();
 
   const senderId = event.notification?.data?.sender_id;
+  const BASE_URL = "https://chat-app-swart-phi.vercel.app";
 
   event.waitUntil(
     clients
@@ -36,15 +37,11 @@ self.addEventListener("notificationclick", function (event) {
         for (const tab of tabList) {
           if (tab.url.includes(self.location.origin) && "focus" in tab) {
             tab.focus();
-            tab.navigate(
-              `${import.meta.env.VITE_FRONTEND_URL}/chat/${senderId}`,
-            );
+            tab.navigate(`${BASE_URL}/chat/${senderId}`);
             return;
           }
         }
-        return clients.openWindow(
-          `${import.meta.env.VITE_FRONTEND_URL}/chat/${senderId}`,
-        );
+        return clients.openWindow(`${BASE_URL}/chat/${senderId}`);
       }),
   );
 });
