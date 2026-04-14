@@ -36,8 +36,8 @@ const SignUpPage = () => {
 
   return (
     <>
-      <div className="w-full flex items-center justify-center p-4 bg-slate-900">
-        <div className="relative w-full max-w-6xl md:h-200 h-650">
+      <div className="w-full min-h-screen flex items-center justify-center px-4 bg-slate-900">
+        <div className="relative w-full md:max-w-6xl min-h-screen">
           <div className="w-full flex flex-col md:flex-row">
             {/* FORM CLOUMN - LEFT SIDE */}
             <div className="md:w-1/2 p-8 flex items-center justify-center md:border-r border-slate-600/30">

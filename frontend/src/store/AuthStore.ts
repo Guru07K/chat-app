@@ -45,7 +45,6 @@ export const useAuthStore = create<AuthStore>((set, get) => {
                 set({
                     user: res.data.result.user,
                     success: res.data.message,
-                    isSignedUp: true
                 })
 
                 get().ConnectSocket();
