@@ -52,10 +52,10 @@ const ChatContainer = () => {
   };
 
   return (
-    <div className="flex flex-col h-lvh w-full">
+    <div className="flex flex-col h-screen w-full overflow-hidden">
       <ChatHeader />
 
-      <div className="flex-1 overflow-y-auto px-4 py-6 bg-linear-to-b from-slate-900 to-slate-800">
+      <div className="flex-1 overflow-y-auto px-4 py-6 min-h-0 bg-linear-to-b from-slate-900 to-slate-800">
         {messages.length > 0 && !isMessageLoading ? (
           <div className="space-y-3">
             {messages.map((msg) => {
