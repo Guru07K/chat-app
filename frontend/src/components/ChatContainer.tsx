@@ -52,7 +52,7 @@ const ChatContainer = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen w-full overflow-hidden">
+    <div className="flex flex-col h-full w-full">
       <ChatHeader />
 
       <div className="flex-1 overflow-y-auto px-4 py-6 min-h-0 bg-linear-to-b from-slate-900 to-slate-800">
@@ -66,8 +66,12 @@ const ChatContainer = () => {
                   key={msg._id}
                   className={`flex ${isMe ? "justify-end" : "justify-start"}`}
                 >
-                  <div
+                  {/* <div
                     className="relative group max-w-[70%]"
+                    style={{ overflow: "visible" }}
+                  > */}
+                  <div
+                    className="relative group max-w-[75%] sm:max-w-[70%]"
                     style={{ overflow: "visible" }}
                   >
                     <div
@@ -97,7 +101,7 @@ const ChatContainer = () => {
                         <img
                           src={msg.image}
                           alt="Shared"
-                          className="rounded-lg mb-2 max-h-48 object-cover"
+                          className="rounded-lg mb-2 max-h-48 w-full object-cover"
                         />
                       )}
 
