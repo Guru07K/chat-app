@@ -6,11 +6,11 @@ importScripts(
 );
 
 firebase.initializeApp({
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  apiKey: "AIzaSyBq9ry6i-eZO714Zw8EUohzOVezYPIewN8",
+  authDomain: "chat-app-94423.firebaseapp.com",
+  projectId: "chat-app-94423",
+  messagingSenderId: "1005782507193",
+  appId: "1:1005782507193:web:186de4b8a479e620824568",
 });
 
 const messaging = firebase.messaging();
