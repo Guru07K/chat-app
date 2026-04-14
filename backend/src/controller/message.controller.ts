@@ -55,7 +55,8 @@ export class MessageController extends BaseController {
                         data: {
                             title: user?.user_name || "",
                             body: message.text || "📷 Image",
-                            sender_id: sender_id.toString()
+                            sender_id: sender_id.toString(),
+                            url: `${process.env.CLIENT_URL}/chat/${sender_id}`
                         }
                     });
                 }
