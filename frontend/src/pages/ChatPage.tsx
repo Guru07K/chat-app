@@ -36,7 +36,7 @@ function ChatPage() {
 
   return (
     // <div className="relative w-full max-w-212.5 h-screen md:h-130 flex rounded-none md:rounded-2xl shadow-2xl shadow-black/40 border border-slate-700/40">
-    <div className="relative w-full max-w-212.5 h-dvh md:h-130 flex rounded-none md:rounded-2xl shadow-2xl shadow-black/40 border border-slate-700/40">
+    <div className="relative w-full max-w-212.5 h-full md:h-130 flex rounded-none md:rounded-2xl shadow-2xl shadow-black/40 border border-slate-700/40">
       {" "}
       {/* LEFT SIDEBAR */}
       <div
