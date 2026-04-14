@@ -20,6 +20,7 @@ const ChatContainer = () => {
   const { user } = useAuthStore();
   const msg_end_ref = useRef<HTMLDivElement>(null);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
     if (selectedUser?._id) {
@@ -68,10 +69,6 @@ const ChatContainer = () => {
                   key={msg._id}
                   className={`flex ${isMe ? "justify-end" : "justify-start"}`}
                 >
-                  {/* <div
-                    className="relative group max-w-[70%]"
-                    style={{ overflow: "visible" }}
-                  > */}
                   <div
                     className="relative group max-w-[75%] sm:max-w-[70%]"
                     style={{ overflow: "visible" }}
@@ -103,7 +100,8 @@ const ChatContainer = () => {
                         <img
                           src={msg.image}
                           alt="Shared"
-                          className="rounded-lg mb-2 max-h-48 w-full object-cover"
+                          onClick={() => setSelectedImage(msg.image)}
+                          className="rounded-lg mb-2 max-h-48 w-full object-cover cursor-pointer"
                         />
                       )}
 
@@ -162,6 +160,25 @@ const ChatContainer = () => {
       <div className="w-full bg-slate-900 px-3 py-2 border-t border-slate-700">
         <MessageInput />
       </div>
+
+      {selectedImage && (
+        <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50">
+          {/* Close button */}
+          <button
+            onClick={() => setSelectedImage(null)}
+            className="absolute top-4 right-4 text-white text-2xl"
+          >
+            ✕
+          </button>
+
+          {/* Image preview */}
+          <img
+            src={selectedImage}
+            alt="Preview"
+            className="max-w-full max-h-full object-contain p-4"
+          />
+        </div>
+      )}
     </div>
   );
 };
