@@ -26,11 +26,11 @@ function ChatHeader() {
   return (
     <div
       className="flex justify-between items-center bg-slate-800/50 border-b
-   border-slate-700/50 max-h-21 px-6 flex-1"
+   border-slate-700/50 max-h-20 px-4 flex-1 shrink-0"
     >
       <div className="flex items-center space-x-3">
         <div className="avatar">
-          <div className="w-12 rounded-full">
+          <div className="w-10 rounded-full">
             <img
               src={selectedUser.profile_image_url || "/avatar.png"}
               alt={selectedUser.user_name}

@@ -1,149 +1,141 @@
 import { create } from "zustand";
 import type { AuthStore, LoginRequest, SignUpRequest, UpdateUserRequest } from "../model/Auth.model";
 import axios from "axios";
-import io from 'socket.io-client'
+import io from "socket.io-client";
 import { getFcmToken } from "../service/getFcmToken";
 
 axios.defaults.withCredentials = true;
 
 export const useAuthStore = create<AuthStore>((set, get) => {
-    return {
-        user: null,
-        isLoading: true,
-        isLoggedIn: false,
-        isSignedUp: false,
-        socket: null,
-        onlineUsers: [],
-        success: "",
-        error: "",
+  return {
+    user: null,
+    isLoading: true,
+    isLoggedIn: false,
+    isSignedUp: false,
+    socket: null,
+    onlineUsers: [],
+    success: "",
+    error: "",
 
-        ChechAuth: async () => {
-            try {
-                set({ isLoading: true, isLoggedIn: false })
-                const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/isLoggedIn`);
+    ChechAuth: async () => {
+      try {
+        set({ isLoading: true, isLoggedIn: false });
+        const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/isLoggedIn`);
 
-                set({
-                    user: res.data.result.user,
-                    isLoggedIn: true,
-                });
+        set({
+          user: res.data.result.user,
+          isLoggedIn: true,
+        });
 
-                get().ConnectSocket();
+        get().ConnectSocket();
+      } catch (error: any) {
+        set({ user: null, isLoggedIn: false });
+      } finally {
+        set({ isLoading: false });
+      }
+    },
 
-            } catch (error: any) {
-                set({ user: null, isLoggedIn: false });
-            } finally {
-                set({ isLoading: false });
-            }
-        },
+    Signup: async (req_data: SignUpRequest) => {
+      try {
+        set({ isLoading: true });
 
-        Signup: async (req_data: SignUpRequest) => {
-            try {
-                set({ isLoading: true })
+        const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/signup`, req_data);
 
-                const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/signup`, req_data);
+        set({
+          user: res.data.result.user,
+          success: res.data.message,
+          isSignedUp: true,
+        });
 
-                set({
-                    user: res.data.result.user,
-                    success: res.data.message,
-                })
+        get().ConnectSocket();
 
-                get().ConnectSocket();
+        const token = await getFcmToken();
+        if (token) {
+          await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/save-fcm-token`, {
+            token,
+          });
+        }
+      } catch (error: any) {
+        set({ user: null, error: error.response.data.message });
+      } finally {
+        set({ isLoading: false });
+      }
+    },
 
-                const token = await getFcmToken();
-                if (token) {
-                    await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/save-fcm-token`, {
-                        token
-                    });
-                }
+    Login: async (req_data: LoginRequest) => {
+      try {
+        set({ isLoading: true });
 
+        const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/login`, req_data);
+        set({
+          user: res.data.result.user,
+          success: res.data.message,
+          isLoggedIn: true,
+        });
 
-            } catch (error: any) {
-                set({ user: null, error: error.response.data.message })
-            } finally {
-                set({ isLoading: false })
-            }
-        },
+        get().ConnectSocket();
 
-        Login: async (req_data: LoginRequest) => {
-            try {
-                set({ isLoading: true })
+        const token = await getFcmToken();
 
-                const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/login`, req_data);
-                set({
-                    user: res.data.result.user,
-                    success: res.data.message,
-                    isLoggedIn: true
-                })
+        if (token) {
+          await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/save-fcm-token`, {
+            token,
+          });
+        }
+      } catch (error: any) {
+        set({ user: null, error: error.response.data.message });
+      } finally {
+        set({ isLoading: false });
+      }
+    },
 
-                get().ConnectSocket();
+    Logout: async () => {
+      try {
+        set({ isLoading: true });
+        const res = await axios(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/logout`);
+        set({ user: null, success: res.data.message, isLoggedIn: false });
+        get().DisConnectSocket();
+      } catch (error: any) {
+        set({ user: null, error: error.response.data.message });
+      } finally {
+        set({ isLoading: false });
+      }
+    },
 
-                const token = await getFcmToken();
+    UpdateProfileImage: async (data: UpdateUserRequest) => {
+      try {
+        set({ isLoading: true });
 
-                if (token) {
-                    await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/save-fcm-token`, {
-                        token
-                    });
-                }
+        const res = await axios.put(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/updateUser`, data);
+        set({ user: res.data.result.user, success: res.data.message });
+      } catch (error: any) {
+        set({ user: null, error: error.response.data.message });
+      } finally {
+        set({ isLoading: false });
+      }
+    },
 
+    ConnectSocket: () => {
+      try {
+        if (!get().user || get().socket?.connected) return;
 
-            } catch (error: any) {
-                set({ user: null, error: error.response.data.message })
-            } finally {
-                set({ isLoading: false })
-            }
-        },
+        const socket = io(import.meta.env.VITE_BASE_URL, { withCredentials: true });
+        socket.connect();
 
-        Logout: async () => {
-            try {
-                set({ isLoading: true })
-                const res = await axios(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/logout`);
-                set({ user: null, success: res.data.message, isLoggedIn: false })
-                get().DisConnectSocket();
-            } catch (error: any) {
-                set({ user: null, error: error.response.data.message })
-            } finally {
-                set({ isLoading: false })
-            }
-        },
+        set({ socket: socket });
 
-        UpdateProfileImage: async (data: UpdateUserRequest) => {
-            try {
-                set({ isLoading: true })
+        socket.on("getOnlineUsers", (user_ids) => {
+          set({ onlineUsers: user_ids });
+        });
+      } catch (error: any) {}
+    },
 
-                const res = await axios.put(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/updateUser`, data);
-                set({ user: res.data.result.user, success: res.data.message })
+    DisConnectSocket: () => {
+      if (get().socket?.connected) {
+        get().socket.disconnect();
+      }
+    },
 
-            } catch (error: any) {
-                set({ user: null, error: error.response.data.message })
-            } finally {
-                set({ isLoading: false })
-            }
-        },
-
-        ConnectSocket: () => {
-            try {
-                if (!get().user || get().socket?.connected) return
-
-                const socket = io(import.meta.env.VITE_BASE_URL, { withCredentials: true });
-                socket.connect();
-
-                set({ socket: socket })
-
-                socket.on("getOnlineUsers", (user_ids) => {
-                    set({ onlineUsers: user_ids })
-                })
-
-            } catch (error: any) {
-
-            }
-        },
-
-        DisConnectSocket: () => {
-            if (get().socket?.connected) {
-                get().socket.disconnect();
-            }
-        },
-
-        ClearMessage: () => set({ success: "", error: "" })
-    }
-})
+    ClearMessage: () => set({ success: "", error: "" }),
+  };
+});

@@ -7,9 +7,11 @@ import ChatContainer from "../components/ChatContainer";
 import NoConversationPlaceholder from "../components/NoConversationPlaceholder";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { useAuthStore } from "../store/AuthStore";
+
 
 function ChatPage() {
-  const { activeTab, selectedUser, setSelectedUser } = useChatStore();
+  const { activeTab, selectedUser, setSelectedUser, getMyChatPartners } = useChatStore();
   const { user_id } = useParams();
 
   useEffect(() => {
@@ -18,47 +20,62 @@ function ChatPage() {
     }
   }, [user_id]);
 
+  useEffect(() => {
+    const socket = useAuthStore.getState().socket;
+
+    const handleNewMessage = () => {
+      getMyChatPartners();
+    };
+
+    socket.on("newMessage", handleNewMessage);
+    return () => socket.off("newMessage", handleNewMessage);
+  }, []);
+
   const loadUserFromUrl = async (id: string) => {
     const { chats, getMyChatPartners } = useChatStore.getState();
-
-    if (chats.length === 0) {
-      await getMyChatPartners();
-    }
-
-    const foundUser = useChatStore
-      .getState()
-      .chats.find((chat) => chat._id === id);
-
-    if (foundUser) {
-      setSelectedUser(foundUser);
-    }
+    if (chats.length === 0) await getMyChatPartners();
+    const foundUser = useChatStore.getState().chats.find((chat) => chat._id === id);
+    if (foundUser) setSelectedUser(foundUser);
   };
 
   return (
-    // <div className="relative w-full max-w-212.5 h-screen md:h-130 flex rounded-none md:rounded-2xl shadow-2xl shadow-black/40 border border-slate-700/40">
-    <div className="relative w-full max-w-212.5 h-full md:h-130 flex rounded-none md:rounded-2xl shadow-2xl shadow-black/40 border border-slate-700/40">
-      {" "}
+    <div className="relative w-full h-full flex">
+
       {/* LEFT SIDEBAR */}
       <div
         className={`
           ${selectedUser ? "hidden md:flex" : "flex"}
-          w-full md:w-70 lg:w-64 shrink-0
-          bg-slate-800/50 backdrop-blur-sm flex-col
-          border-r border-slate-700/50
+          w-full md:w-85 lg:w-95 shrink-0 flex-col
+          border-r
         `}
+        style={{
+          background: "#111b21",
+          borderColor: "#2a3942",
+        }}
       >
-        <ProfileHeader />
-        <ActiveTabSwitch />
-        <div className="flex-1 overflow-y-auto p-3 space-y-2">
+        {/* Profile header area */}
+        <div style={{ background: "#1f2c34", borderBottom: "1px solid #2a3942" }}>
+          <ProfileHeader />
+        </div>
+
+        {/* Search + Tab switch */}
+        <div style={{ background: "#111b21" }}>
+          <ActiveTabSwitch />
+        </div>
+
+        {/* Chat / Contact list */}
+        <div className="flex-1 overflow-y-auto" style={{ background: "#111b21" }}>
           {activeTab === "chats" ? <ChatsList /> : <ContactList />}
         </div>
       </div>
-      {/* RIGHT SIDE */}
+
+      {/* RIGHT — Chat area */}
       <div
         className={`
           ${selectedUser ? "flex" : "hidden md:flex"}
-          flex-1 flex-col bg-slate-900/50 backdrop-blur-sm min-w-0
+          flex-1 flex-col min-w-0
         `}
+        style={{ background: "#0b141a" }}
       >
         {selectedUser ? <ChatContainer /> : <NoConversationPlaceholder />}
       </div>
